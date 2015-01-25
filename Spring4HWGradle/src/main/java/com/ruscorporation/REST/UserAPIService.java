@@ -45,8 +45,9 @@ public class UserAPIService {
 			return contactService.getByName(name);
 	}
 
-	@RequestMapping("/api/contact/list")
-	public List<Contact> getContactList() {
+	@RequestMapping(value="/api/contact/list/{isTest}", method = RequestMethod.GET)
+	public List<Contact> getContactList(@PathVariable("isTest") String isTest) {
+		System.out.println("Test items=" + isTest);
 		return contactService.list();
 	}
 	
