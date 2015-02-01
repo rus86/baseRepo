@@ -7,6 +7,10 @@
 <title>Insert title here</title>
 <script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript"
+	src="http://www.xiper.net/examples/js-plugins/html5-and-css3/placeholder/js/jquery.placeholder.js"></script>
+<script type="text/javascript" 
+	src="http://resnici.kiev.ua/jquery.mask.min.js"></script>
 
 <script type="text/javascript">
 	//Ecvivalent $("document").ready()
@@ -24,25 +28,43 @@
 			console.log('Initiate call');
 			var countryList = $('#countryItems > li');
 			countryList.each(function(index) {
-				console.log('Index=' + index + ' item=' + this.innerHTML)			
+				console.log('Index=' + index + ' item=' + this.innerHTML)
 			})
-			var data = {isTest:true};
+			var data = {
+				isTest : true
+			};
 			var parameter = 'test';
 			//$.getJSON('/api/contact/list/', data, success);
 			$.getJSON('/api/contact/list/' + parameter, success);
 		})
+		
+		$('#secondName').click(function(){
+			console.log('Init call');
+			$.ajax({
+				url: '/api/execute'
+			}).done(function(html){
+				console.log(html);
+			})
+			
+		})
+			
+		
 
 		function success(resultData) {
 			console.log('Result data');
-			
+
 			$.each(resultData, function() {
 				console.log('Element=' + this.name);
 				$('#countryItems').after(this.name + '<br/>');
 			});
-			
-			
 
 		}
+
+		//Init placeholder with JQuery placeholder blugin
+		$('input, textarea').placeholder();
+		
+		//Initial mask
+		$('#firstName').mask('99-999/9999');
 
 	});
 
@@ -65,5 +87,12 @@
 		<li>Ukraine</li>
 		<li>Russia</li>
 	</ul>
+	<br />
+	<h1>Test place holder</h1>
+	<input id="firstName" type="text" placeholder="Please enter first name">
+	<input id="secondName" type="text"
+		placeholder="Please enter second name">
+	<input id="address" type="text" placeholder="Please enter your address" />
+
 </body>
 </html>

@@ -1,6 +1,9 @@
 package com.ruscorporation.REST;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,34 +42,47 @@ public class UserAPIService {
 
 	@RequestMapping("/api/contact/get")
 	public Contact getContact(Integer id, String name) {
-		if(id!=null)
+		if (id != null)
 			return contactService.get(id);
 		else
 			return contactService.getByName(name);
 	}
 
-	@RequestMapping(value="/api/contact/list/{isTest}", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/contact/list/{isTest}", method = RequestMethod.GET)
 	public List<Contact> getContactList(@PathVariable("isTest") String isTest) {
 		System.out.println("Test items=" + isTest);
 		return contactService.list();
 	}
-	
-	@RequestMapping(value="/api/contact/add", method = RequestMethod.PUT)
-	public void addContact(@RequestBody Contact contact){
+
+	@RequestMapping(value = "/api/execute", method = RequestMethod.GET)
+	public String getResult() {
+		String result = "Empty result";
+		ExecutorService executorService = Executors.newCachedThreadPool();
+		Future<String> future = executorService.submit(new ExecuteMethod());
+		try {
+			if (future.isDone()) {
+				System.out.println("Result2=" + future.get());
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return result;
+	}
+
+	@RequestMapping(value = "/api/contact/add", method = RequestMethod.PUT)
+	public void addContact(@RequestBody Contact contact) {
 		contactService.saveOrUpdate(contact);
 	}
-	
-	@RequestMapping(value="/api/contact/create", method = RequestMethod.POST)
-	public void createContact(@RequestBody Contact contact){
+
+	@RequestMapping(value = "/api/contact/create", method = RequestMethod.POST)
+	public void createContact(@RequestBody Contact contact) {
 		contactService.saveOrUpdate(contact);
 	}
-	
-	@RequestMapping(value="/api/contact/remove/{id}", method = RequestMethod.DELETE)
-	public void removeContact(@PathVariable("id") Integer id){
+
+	@RequestMapping(value = "/api/contact/remove/{id}", method = RequestMethod.DELETE)
+	public void removeContact(@PathVariable("id") Integer id) {
 		Contact contact = contactService.get(id);
 		contactService.delete(contact);
 	}
-	
-	
 
 }
