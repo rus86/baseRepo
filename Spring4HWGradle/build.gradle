@@ -1,0 +1,94 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+apply plugin: 'jetty'
+
+group = 'com.ruscorporation'
+version = '0.0.1-SNAPSHOT'
+
+description = """Spring4HW Maven Webapp"""
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+
+
+repositories {
+        
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+	
+    compile group: 'org.springframework', name: 'spring-web', version:'4.1.1.RELEASE'
+    compile group: 'org.springframework', name: 'spring-core', version:'4.1.1.RELEASE'
+    compile group: 'org.springframework', name: 'spring-webmvc', version:'4.1.1.RELEASE'
+    compile group: 'commons-pool', name: 'commons-pool', version:'1.6'
+    compile group: 'javax.servlet', name: 'jstl', version:'1.2'
+    compile group: 'taglibs', name: 'standard', version:'1.1.2'
+    compile group: 'org.hibernate', name: 'hibernate-core', version:'4.2.0.Final'
+    compile group: 'javax.persistence', name: 'persistence-api', version:'1.0.2'
+    compile group: 'org.springframework', name: 'spring-tx', version:'3.2.2.RELEASE'
+    compile group: 'commons-dbcp', name: 'commons-dbcp', version:'20030825.184428'
+    compile group: 'org.springframework', name: 'spring-orm', version:'4.1.1.RELEASE'
+    compile group: 'org.springframework', name: 'spring-context', version:'4.1.1.RELEASE'
+    compile group: 'postgresql', name: 'postgresql', version:'9.1-901.jdbc4'
+    compile group: 'org.springframework.security', name: 'spring-security-core', version:'3.2.4.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-web', version:'3.2.4.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-config', version:'3.2.4.RELEASE'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version:'2.0-rc1'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.0-rc1'
+    compile group: 'displaytag', name: 'displaytag', version:'1.2'
+    compile group: 'junit', name: 'junit', version:'4.11'
+    compile group: 'org.mockito', name: 'mockito-all', version:'1.9.5'
+    compile group: 'org.springframework', name: 'spring-test', version:'3.2.2.RELEASE'
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version:'3.1.0'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.4.3'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.4.3'
+    compile 'info.cukes:cucumber-junit:1.2.0'
+    compile 'info.cukes:cucumber-java:1.2.0'
+    
+    
+}
+
+//Set archive name
+war.archiveName='ROOT.war'
+
+//Deploy war to Tomcat
+task deployToTomcat(type: Copy) {
+	println 'Remove old data'
+	delete System.env.CATALINA_HOME + "/webapps/ROOT", System.env.CATALINA_HOME + "/webapps/ROOT.war"
+	println 'Start deploing...'
+    from war
+    into System.env.CATALINA_HOME + "/webapps"
+    println 'Deploing COMPLETED'
+}
+
+//Change Jetty context path
+jettyRunWar.contextPath=''
+
+//Disable 'test' task in BUILD
+//test.onlyIf { false }
+//test.enabled=false
+
+task hello {
+	//Define extra property
+	ext.taskName='helloTask'
+	
+	String item = 'Rus Hello!'
+	4.times{println item}
+}
+
+hello << {
+	println 'Context Path: '+jettyRunWar.contextPath
+	
+	//Printl task property
+	println 'Task name: ' + hello.taskName
+	
+	println 'Compile Java options: ' + compileJava.options 
+	
+}
+
+
+
+
